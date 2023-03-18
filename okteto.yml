@@ -1,0 +1,49 @@
+name: payload
+
+# The build section defines how to build the images of your development environment
+# More info: https://www.okteto.com/docs/reference/manifest/#build
+build:
+
+  # You can use the following env vars to refer to this image in your deploy commands:
+  #  - OKTETO_BUILD_PAYLOAD_REGISTRY: image registry
+  #  - OKTETO_BUILD_PAYLOAD_REPOSITORY: image repo
+  #  - OKTETO_BUILD_PAYLOAD_IMAGE: image name
+  #  - OKTETO_BUILD_PAYLOAD_SHA: image tag sha256
+  payload: ""
+
+  # You can use the following env vars to refer to this image in your deploy commands:
+  #  - OKTETO_BUILD__REGISTRY: image registry
+  #  - OKTETO_BUILD__REPOSITORY: image repo
+  #  - OKTETO_BUILD__IMAGE: image name
+  #  - OKTETO_BUILD__SHA: image tag sha256
+# The deploy section defines how to deploy your development environment
+# More info: https://www.okteto.com/docs/reference/manifest/#deploy
+deploy:
+  compose:
+    file: docker-compose.yml
+
+# The dependencies section defines other git repositories to be deployed as part of your development environment
+# More info: https://www.okteto.com/docs/reference/manifest/#dependencies
+# dependencies:
+#   - https://github.com/okteto/sample
+
+
+# The dev section defines how to activate a development container
+# More info: https://www.okteto.com/docs/reference/manifest/#dev
+dev:
+  payload:
+    image: node:18-alpine
+    command:
+      - sh
+      - -c
+      - sh -c "yarn install && yarn dev"
+    sync:
+      - .:/home/node/app
+    forward:
+      - 3000:3000
+    environment:
+      - MONGODB_URI=$MONGODB_URI
+      - NODE_ENV=$NODE_ENV
+      - PAYLOAD_SECRET=$PAYLOAD_SECRET
+      - PORT=3000
+
